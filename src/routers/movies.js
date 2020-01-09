@@ -12,4 +12,13 @@ router.post("/movies", async (req, res) => {
     }
 });
 
+
+router.get("/movies/:id", async (req, res) => {
+    try {
+        let movies = await Movie.findById(req.params.id);
+        res.send(movies);
+    } catch (error) {
+        res.status(500).send(error); 
+    }
+})
 module.exports = router;
