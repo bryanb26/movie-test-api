@@ -12,14 +12,17 @@ router.post("/users", async (req, res) => {
     }
 });
 
-/* router.get("/users", async (req, res) => {
+router.post("/users/login", async (req, res) => {
     try {
-        let users = await user.find({});
-        res.send(users);
+        const user = await User.findByCredentials(
+            req.body.email, 
+            req.body.password
+        );
+        res.send(user);
     } catch (error) {
-        res.status(500).send(error); 
+        res.status(500).send(error);
     }
-}) */
+});
 
 router.get("/users", async (req, res) => {
     try {
