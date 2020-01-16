@@ -23,3 +23,17 @@ const testFunction = async () => {
   console.log(isMatch);
 };
 testFunction(); */
+
+
+const jwt = require("jsonwebtoken");
+
+const testFunction = async() => {
+  const token = jwt.sign({_id: "5e1f3fca5b09e82b8884d068"}, "obeysudo", {
+    expriesIn: "7 days"
+  });
+  console.log(token);
+  const data = jwt.verify(token, "obeysudo");
+  console.log(data);
+};
+
+testFunction();
