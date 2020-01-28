@@ -25,7 +25,7 @@ const testFunction = async () => {
 testFunction(); */
 
 
-const jwt = require("jsonwebtoken");
+/* const jwt = require("jsonwebtoken");
 
 const testFunction = async() => {
   const token = jwt.sign({_id: "5e1f3fca5b09e82b8884d068"}, "obeysudo", {
@@ -36,4 +36,4 @@ const testFunction = async() => {
   console.log(data);
 };
 
-testFunction();
+testFunction(); */
