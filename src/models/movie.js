@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 const Movie = mongoose.model("movie", {
     title:{
         type:String,

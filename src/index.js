@@ -37,3 +37,13 @@ const testFunction = async() => {
 };
 
 testFunction(); */
+
+const Review = require("./models/review");
+const User = require("./models/user");
+
+const test = async ()=> {
+  const review = await Review.findById(""); //find the review
+  await review.populate("owner").execPopulate(); //find the owner of the review
+  console.log(review.owner);
+};
+test();
