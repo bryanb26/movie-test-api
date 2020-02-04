@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-const jwt = require("jsonwebtoken");
 const Review = mongoose.model("Review", {
   movie: {
     type: String,
@@ -19,7 +18,9 @@ const Review = mongoose.model("Review", {
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true
+    required: true,
+    ref: "User"
   }
 });
+
 module.exports = Review;

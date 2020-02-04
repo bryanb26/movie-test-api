@@ -1,7 +1,6 @@
 const express = require("express");
 const Review = require("../models/review");
 const auth = require("../middleware/auth");
-const jwt = require("jsonwebtoken");
 const router = new express.Router();
 
 router.post("/reviews", auth, async (req, res) => {
@@ -25,6 +24,15 @@ router.get("/reviews", async (req, res) => {
   } catch (error) {
     res.status(500).send(error);
   }
+});
+router.get("/reviews/me", auth, async(req,res) => {
+  try {
+      await req.user.populate("reviews").execPopulate();
+      res.send(req.user.reviews);
+  } catch (error) {
+      res.send(error);
+  }
+
 });
 router.get("/reviews/:id", async (req, res) => {
   const movie = req.params.id;
@@ -58,7 +66,6 @@ router.patch("/reviews/:id", async (req, res) => {
     res.status(500).send(error);
   }
 });
-
 router.delete("/reviews/:id", async (req, res) => {
   try {
     const review = await Review.findByIdAndDelete(req.params.id);
