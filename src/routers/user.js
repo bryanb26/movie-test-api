@@ -1,6 +1,8 @@
 const express = require("express");
 const User = require("../models/user");
 const auth = require("../middleware/auth");
+const upload = require("../middleware/upload")
+
 const router = new express.Router();
 
 router.post("/users", async (req, res) => {
@@ -101,5 +103,16 @@ router.patch("/users/:id", auth, async (req, res) => {
     res.status(400).send(err);
   }
 });
+
+router.post("/users/me/profilePic",
+  upload.single("profilePic"),
+  async(req, res) =>{
+    try {
+      res.send("Upload Successful");
+    } catch (error) {
+      res.send(error);
+    }
+  }
+)
 
 module.exports = router;
