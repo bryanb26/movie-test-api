@@ -1,7 +1,7 @@
 const express = require("express");
 const User = require("../models/user");
 const auth = require("../middleware/auth");
-const upload = require("../middleware/upload")
+const upload = require("../middleware/upload");
 
 const router = new express.Router();
 
@@ -9,13 +9,13 @@ router.post("/users", async (req, res) => {
   try {
     const user = new User(req.body);
     await user.save();
-    const token = await user.generateToken(); //lowercase so that token is generated for ONLY this user
-    res.send({ user, token });
+    const token = await user.generateToken(); //lowercase "token" so that token is generated for only this user
+    res.send({user, token});
   } catch (e) {
-    console.log(e);
     res.status(400).send(e);
   }
 });
+
 router.post("/users/login", async (req, res) => {
   try {
     const user = await User.findByCredentials(
@@ -23,28 +23,26 @@ router.post("/users/login", async (req, res) => {
       req.body.password
     );
     const token = await user.generateToken();
-
-    res.send({ user, token });
-  } catch (error) {
-    console.log(error);
-    res.status(400).send(error);
+    res.send({user, token});
+  } catch (e) {
+    res.status(400).send(e);
   }
 });
-router.post("/users/logout", auth, async (req, res) => {
-  //console.log(token.token);
+
+router.post("/users/logout", auth, async(req, res) => {
   try {
     req.user.tokens = req.user.tokens.filter(token => {
       console.log(token.token);
       return token.token !== req.token;
-
       //We ONLY return the tokens that do not match the bearer token
     });
     await req.user.save();
-    res.send();
+    res.send('You have logged out');
   } catch (error) {
     res.status(400).send(error);
   }
 });
+
 router.get("/users", async (req, res) => {
   try {
     let users = await User.find({});
@@ -54,9 +52,11 @@ router.get("/users", async (req, res) => {
     res.status(500).send(err);
   }
 });
-router.get("/users/me", auth, async (req, res) => {
+
+router.get("/users/me", auth, async(req, res) => {
   res.send(req.user);
 });
+
 router.get("/users/:id", async (req, res) => {
   try {
     let user = await User.findById(req.params.id);
@@ -69,7 +69,7 @@ router.get("/users/:id", async (req, res) => {
   }
 });
 
-router.delete("/users/:id", auth, async (req, res) => {
+router.delete("/users/:id", async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
 
@@ -81,7 +81,8 @@ router.delete("/users/:id", auth, async (req, res) => {
     res.status(500).send(error);
   }
 });
-router.patch("/users/:id", auth, async (req, res) => {
+
+router.patch("/users/:id", async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = ["name", "email"];
   const isValidOperation = updates.every(update =>
@@ -106,13 +107,30 @@ router.patch("/users/:id", auth, async (req, res) => {
 
 router.post("/users/me/profilePic",
   upload.single("profilePic"),
-  async(req, res) =>{
-    try {
+  async(req, res) => {
+    try{
       res.send("Upload Successful");
     } catch (error) {
       res.send(error);
     }
   }
-)
+);
+
+router.get("/reviews/:id", async (req, res) => {
+  const movie = req.params.id;
+  const limit = parseInt(req.query.limit);
+  const skip = parseInt(req.query.skip);
+  const sort = parseInt(req.query.sort);
+
+  try {
+    let reviews = await Review.find({ movie: movie })
+      .skip(skip)
+      .limit(limit)
+      .sort({ movie: sort});  
+    res.send(reviews);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
 
 module.exports = router;
