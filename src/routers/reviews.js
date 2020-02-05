@@ -77,4 +77,22 @@ router.delete("/reviews/:id", async (req, res) => {
     res.status(500).send(error);
   }
 });
+
+router.get("/reviews/:id", async (req, res) => {
+  const movie = req.params.id;
+  const limit = parseInt(req.query.limit);
+  const skip = parseInt(req.query.skip);
+  const sort = parseInt(req.query.sort);
+
+  try {
+    let reviews = await Review.find({ movie: movie })
+      .skip(skip)
+      .limit(limit)
+      .sort({ movie: sort});  
+    res.send(reviews);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
 module.exports = router;
